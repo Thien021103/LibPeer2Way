@@ -5,3 +5,4 @@ build
 1080.raw
 alaw08m.wav
 test.264
+**/node_modules/
