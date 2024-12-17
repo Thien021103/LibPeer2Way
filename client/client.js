@@ -4,7 +4,7 @@ const iceConnectionLog = document.getElementById('ice-connection-state'),
     dataChannelLog = document.getElementById('data-channel');
 
 const clientId = randomId(10);
-const websocket = new WebSocket('ws://192.168.0.168:8000/' + clientId);
+const websocket = new WebSocket('ws://192.168.66.217:8000/' + clientId);
 
 websocket.onopen = () => {
     document.getElementById('start').disabled = false;
@@ -22,17 +22,24 @@ websocket.onmessage = async (evt) => {
 }
 
 let pc = null;
-let dc = null;
+let datachannel = null;
 
-function createPeerConnection() {
+ function createPeerConnection() {
     const config = {
         bundlePolicy: "max-bundle",
     };
-
+    
     if (document.getElementById('use-stun').checked) {
-        config.iceServers = [{urls: ['stun:stun.l.google.com:19302']}];
-    }
+        config.iceServers = [{urls: ['stun:stun.l.google.com:19302']},
+        // config.iceServers = [
+        //     {
+        //         urls: 'turn:192.168.0.170:3478',
+        //         username: 'client',
+        //         credential: 'client123'
+        //     }
+        ]
 
+    }
     let pc = new RTCPeerConnection(config);
 
     // Register some listeners to help debugging
@@ -48,6 +55,7 @@ function createPeerConnection() {
         signalingLog.textContent += ' -> ' + pc.signalingState);
     signalingLog.textContent = pc.signalingState;
 
+
     // Receive audio/video track
     pc.ontrack = (evt) => {
         document.getElementById('media').style.display = 'block';
@@ -57,42 +65,69 @@ function createPeerConnection() {
         video.play();
     };
 
-    // Receive data channel
-    pc.ondatachannel = (evt) => {
-        dc = evt.channel;
-
-        dc.onopen = () => {
-            dataChannelLog.textContent += '- open\n';
-            dataChannelLog.scrollTop = dataChannelLog.scrollHeight;
-        };
-
-        let dcTimeout = null;
-        dc.onmessage = (evt) => {
-            if (typeof evt.data !== 'string') {
-                return;
-            }
-
-            dataChannelLog.textContent += '< ' + evt.data + '\n';
-            dataChannelLog.scrollTop = dataChannelLog.scrollHeight;
-
-            dcTimeout = setTimeout(() => {
-                if (!dc) {
-                    return;
-                }
-                const message = `Pong ${currentTimestamp()}`;
-                dataChannelLog.textContent += '> ' + message + '\n';
-                dataChannelLog.scrollTop = dataChannelLog.scrollHeight;
-                dc.send(message);
-            }, 1000);
-        }
-
-        dc.onclose = () => {
-            clearTimeout(dcTimeout);
-            dcTimeout = null;
-            dataChannelLog.textContent += '- close\n';
-            dataChannelLog.scrollTop = dataChannelLog.scrollHeight;
-        };
+    const datachannel = pc.createDataChannel('pear')
+    // // Receive data channel
+    pc.ondatachannel = () => {
+        console.log('ondatachannel');
     }
+      
+    datachannel.onclose = () => console.log('datachannel has closed');
+    datachannel.onopen = () => {
+        console.log('datachannel has opened');
+        console.log('sending ping');
+        setInterval(() => {
+            console.log('sending ping');
+            datachannel.send('ping');
+        }, 1000);
+    }
+      
+    datachannel.onmessage = async e => {
+      
+        if (e.data instanceof Blob) { 
+      
+            const buffer = await e.data.arrayBuffer();
+
+            var arrayBufferView = new Uint8Array(buffer);
+            var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
+            var urlCreator = window.URL || window.webkitURL;
+            var imageUrl = urlCreator.createObjectURL( blob );
+            
+            var imageElement = document.getElementById('imgStream');
+            imageElement.src = imageUrl;
+        }  
+    }
+    pc.onicecandidate = event => {
+        
+        setInterval(() => {
+    
+        pc.getStats(null).then((stats) => {
+            let statsOutput = "";
+    
+            stats.forEach((report) => {
+            statsOutput +=
+                `<h2>Report: ${report.type}</h2>\n<strong>ID:</strong> ${report.id}<br>\n` +
+                `<strong>Timestamp:</strong> ${report.timestamp}<br>\n`;
+            // Now the statistics for this report; we intentionally drop the ones we
+            // sorted to the top above
+    
+            Object.keys(report).forEach((statName) => {
+                if (
+                    statName !== "id" &&
+                    statName !== "timestamp" &&
+                    statName !== "type"
+                ) {
+                    statsOutput += `<strong>${statName}:</strong> ${report[statName]}<br>\n`;
+                }
+            });
+            });
+    
+            document.getElementById("stats-box").innerHTML = statsOutput;
+        });
+        }, 1000);
+    
+    }
+      
+      
 
     return pc;
 }
@@ -125,8 +160,19 @@ async function sendAnswer(pc) {
     }));
 }
 
+async function getMedia(pc) {
+    // Capture audio from the microphone and add it to the PeerConnection
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+    } catch (error) {
+        console.error('Error accessing microphone:', error);
+    }
+ }
+
 async function handleOffer(offer) {
     pc = createPeerConnection();
+    await getMedia(pc)
     await pc.setRemoteDescription(offer);
     await sendAnswer(pc);
 }
@@ -151,9 +197,9 @@ function stop() {
     document.getElementById('start').style.display = 'inline-block';
 
     // close data channel
-    if (dc) {
-        dc.close();
-        dc = null;
+    if (datachannel) {
+        datachannel.close();
+        datachannel = null;
     }
 
     // close transceivers
@@ -195,4 +241,3 @@ function currentTimestamp() {
         return Date.now() - startTime;
     }
 }
-
