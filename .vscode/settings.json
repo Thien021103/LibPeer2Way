@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "peer_connection.h": "c",
+        "cjson.h": "c",
+        "libwebsockets.h": "c",
+        "dtls_srtp.h": "c",
+        "sdp.h": "c",
+        "sctp.h": "c",
+        "buffer.h": "c",
+        "utils.h": "c",
+        "config.h": "c"
+    }
+}
