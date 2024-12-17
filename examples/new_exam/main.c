@@ -116,7 +116,6 @@ static GstFlowReturn on_audio_data(GstElement* sink, void* data) {
 
     gst_buffer_map(buffer, &info, GST_MAP_READ);
     peer_connection_send_audio(g_pc, info.data, info.size);
-    //printf(", send audio\n");
     gst_buffer_unmap(buffer, &info);
 
     gst_sample_unref(sample);
@@ -136,6 +135,7 @@ static void onremoteaudio(uint8_t* data, size_t size, void *userdata) {
 
 static void signal_handler(int signal) {
   g_interrupted = 1;
+  peer_signaling_leave_channel();
 }
 
 static void on_request_keyframe(void* data) {
@@ -147,13 +147,16 @@ static void on_request_keyframe(void* data) {
 //         sleep(1);  // Adjust as needed for your latency requirements
 //     }
 // }
-static void* peer_singaling_task(void* data) {
-  while (!g_interrupted) {
-    peer_signaling_loop();
-    usleep(1000);
-  }
 
-  pthread_exit(NULL);
+static void* peer_singaling_task(void* data) {
+
+//  while (!g_interrupted) {
+//    peer_signaling_loop();
+//    usleep(1000);
+      connect_to_janus_server();
+//  }
+
+    pthread_exit(NULL);
 }
 
 static void* peer_connection_task(void* data) {
@@ -194,7 +197,7 @@ int main(int argc, char* argv[]) {
   };
       
   ServiceConfiguration service_config = SERVICE_CONFIG_DEFAULT();
-  service_config.ws_url = "192.168.1.6";
+  service_config.ws_url = "192.168.0.168";
   service_config.ws_port = 8000;
 
 

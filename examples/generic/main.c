@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
 
 
   ServiceConfiguration service_config = SERVICE_CONFIG_DEFAULT();
-  service_config.ws_url = "192.168.0.169";
+  service_config.ws_url = "192.168.0.168";
   service_config.ws_port = 8000;
 
   peer_init();
@@ -137,15 +137,10 @@ int main(int argc, char* argv[]) {
 
   reader_init();
 
-  gboolean streamout = FALSE;
   gboolean isReceiveAudio = FALSE;
 
   while (!g_interrupted) {
     if (g_state == PEER_CONNECTION_COMPLETED) {
-      // if(!streamout) {
-      //     create_streamout_thread(argc, argv);
-      //     streamout = TRUE;
-      // }
       curr_time = get_timestamp();
 
       if (!isReceiveAudio) {
@@ -175,8 +170,6 @@ int main(int argc, char* argv[]) {
   pthread_join(peer_singaling_thread, NULL);
   pthread_join(peer_connection_thread, NULL);
 
-  // stop_streamout_thread();
-  // streamout = FALSE;
   reader_deinit();
 
   peer_signaling_leave_channel();
