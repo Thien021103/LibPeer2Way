@@ -20,18 +20,3 @@ add_executable(newexam ${SRCS})
 
 # Link libraries: peer (libpeer.so), pthread, and GStreamer
 target_link_libraries(newexam peer pthread ${GST_LIBRARIES})
-
-
-
-# Old CmakeLists.txt
-
-# project(sample)
-
-# file(GLOB SRCS "*.c")
-
-# include_directories(${CMAKE_SOURCE_DIR}/src)
-
-# add_executable(sample ${SRCS})
-
-# target_link_libraries(sample peer pthread)
-

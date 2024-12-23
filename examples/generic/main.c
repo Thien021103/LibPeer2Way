@@ -9,7 +9,6 @@
 #include <gst/app/gstappsrc.h>
 
 #include "peer.h"
-// #include "streamout.h"
 #include "reader.h"
 
 int g_interrupted = 0;
@@ -61,13 +60,7 @@ static void signal_handler(int signal) {
 }
 
 static void* peer_singaling_task(void* data) {
-
-//  while (!g_interrupted) {
-//    peer_signaling_loop();
-//    usleep(1000);
-      connect_to_janus_server();
-//  }
-
+    connect_to_janus_server();
     pthread_exit(NULL);
 }
 
@@ -128,12 +121,9 @@ int main(int argc, char* argv[]) {
   service_config.client_id = "1001";
   service_config.pc = g_pc;
   peer_signaling_set_config(&service_config);
-//  peer_signaling_join_channel();
 
   pthread_create(&peer_connection_thread, NULL, peer_connection_task, NULL);
   pthread_create(&peer_singaling_thread, NULL, peer_singaling_task, NULL);
-//  printf("Connect to Janus\n");
-//  connect_to_janus_server();
 
   reader_init();
 
