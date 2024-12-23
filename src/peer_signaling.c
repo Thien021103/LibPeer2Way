@@ -342,38 +342,6 @@ static struct lws_protocols protocols[] =
 { NULL, NULL, 0, 0 } /* terminator */
 };
 
-// static int peer_signaling_mqtt_subscribe(int subscribed) {
-//     MQTTStatus_t status = MQTTSuccess;
-//     MQTTSubscribeInfo_t sub_info;
-
-//     uint16_t packet_id = MQTT_GetPacketId(&g_ps.mqtt_ctx);
-
-//     memset(&sub_info, 0, sizeof(sub_info));
-//     sub_info.qos = MQTTQoS0;
-//     sub_info.pTopicFilter = g_ps.subtopic;
-//     sub_info.topicFilterLength = strlen(g_ps.subtopic);
-
-//     if (subscribed) {
-//         status = MQTT_Subscribe(&g_ps.mqtt_ctx, &sub_info, 1, packet_id);
-//     } else {
-//         status = MQTT_Unsubscribe(&g_ps.mqtt_ctx, &sub_info, 1, packet_id);
-//     }
-//     if (status != MQTTSuccess) {
-//         LOGE("MQTT_Subscribe failed: Status=%s.", MQTT_Status_strerror(status));
-//         return -1;
-//     }
-
-//     status = MQTT_ProcessLoop(&g_ps.mqtt_ctx);
-
-//     if (status != MQTTSuccess) {
-//         LOGE("MQTT_ProcessLoop failed: Status=%s.", MQTT_Status_strerror(status));
-//         return -1;
-//     }
-
-//     LOGD("MQTT Subscribe/Unsubscribe succeeded.");
-//     return 0;
-// }
-
 static void peer_signaling_onicecandidate(char* description, void* userdata) {
     g_print("send offer here:\n%s\n",description);
     JsonObject *jsepOffer = json_object_new();
@@ -398,37 +366,6 @@ static void peer_signaling_onicecandidate(char* description, void* userdata) {
     lws_websocket_connection_send_text(web_socket, text, JANUS_MSS_SDP_OFFER);
 
     g_free(text);
-
-//    cJSON* res;
-//    char* payload;
-//    char cred_plaintext[2 * CRED_LEN + 1];
-//    char cred_base64[2 * CRED_LEN + 10];
-
-//    if (g_ps.id > 0) {
-//        res = cJSON_CreateObject();
-//        cJSON_AddStringToObject(res, "jsonrpc", RPC_VERSION);
-//        cJSON_AddNumberToObject(res, "id", g_ps.id);
-//        cJSON_AddStringToObject(res, "result", description);
-//        payload = cJSON_PrintUnformatted(res);
-//        if (payload) {
-//            //      peer_signaling_mqtt_publish(&g_ps.mqtt_ctx, payload);
-//            free(payload);
-//        }
-//        cJSON_Delete(res);
-//        g_ps.id = 0;
-//    } else {
-//        // enable authentication
-//        if (strlen(g_ps.username) > 0 && strlen(g_ps.password) > 0) {
-//            snprintf(cred_plaintext, sizeof(cred_plaintext), "%s:%s", g_ps.username, g_ps.password);
-//            snprintf(cred_base64, sizeof(cred_base64), "Basic ");
-//            base64_encode((unsigned char*)cred_plaintext, strlen(cred_plaintext),
-//                          cred_base64 + strlen(cred_base64), sizeof(cred_base64) - strlen(cred_base64));
-//            LOGD("Basic Auth: %s", cred_base64);
-//            peer_signaling_http_post(g_ps.http_host, g_ps.http_path, g_ps.http_port, cred_base64, description);
-//        } else {
-//            peer_signaling_http_post(g_ps.http_host, g_ps.http_path, g_ps.http_port, "", description);
-//        }
-//    }
 }
 
 int peer_signaling_loop() {
