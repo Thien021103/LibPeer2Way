@@ -6,9 +6,9 @@
 #include "address.h"
 #include "config.h"
 #include "dtls_srtp.h"
-#if CONFIG_MBEDTLS_DEBUG
-#include "mbedtls/debug.h"
-#endif
+// #if CONFIG_MBEDTLS_DEBUG
+// #include "mbedtls/debug.h"
+// #endif
 #include "mbedtls/sha256.h"
 #include "mbedtls/ssl.h"
 #include "ports.h"
@@ -135,11 +135,11 @@ static int dtls_srtp_selfsign_cert(DtlsSrtp* dtls_srtp) {
   return ret;
 }
 
-#if CONFIG_MBEDTLS_DEBUG
-static void dtls_srtp_debug(void* ctx, int level, const char* file, int line, const char* str) {
-  LOGD("%s:%04d: %s", file, line, str);
-}
-#endif
+// #if CONFIG_MBEDTLS_DEBUG
+// static void dtls_srtp_debug(void* ctx, int level, const char* file, int line, const char* str) {
+//   LOGD("%s:%04d: %s", file, line, str);
+// }
+// #endif
 
 int dtls_srtp_init(DtlsSrtp* dtls_srtp, DtlsSrtpRole role, void* user_data) {
   static const mbedtls_ssl_srtp_profile default_profiles[] = {
@@ -162,10 +162,10 @@ int dtls_srtp_init(DtlsSrtp* dtls_srtp, DtlsSrtpRole role, void* user_data) {
   mbedtls_pk_init(&dtls_srtp->pkey);
   mbedtls_entropy_init(&dtls_srtp->entropy);
   mbedtls_ctr_drbg_init(&dtls_srtp->ctr_drbg);
-#if CONFIG_MBEDTLS_DEBUG
-  mbedtls_debug_set_threshold(3);
-  mbedtls_ssl_conf_dbg(&dtls_srtp->conf, dtls_srtp_debug, NULL);
-#endif
+// #if CONFIG_MBEDTLS_DEBUG
+//   mbedtls_debug_set_threshold(3);
+//   mbedtls_ssl_conf_dbg(&dtls_srtp->conf, dtls_srtp_debug, NULL);
+// #endif
   dtls_srtp_selfsign_cert(dtls_srtp);
 
   mbedtls_ssl_conf_verify(&dtls_srtp->conf, dtls_srtp_cert_verify, NULL);
@@ -244,28 +244,6 @@ static int dtls_srtp_key_derivation(DtlsSrtp* dtls_srtp, const unsigned char* ma
     return ret;
   }
 
-#if 0
-  int i, j;
-  printf("    DTLS-SRTP key material is:");
-  for (j = 0; j < sizeof(key_material); j++) {
-    if (j % 8 == 0) {
-      printf("\n    ");
-    }
-    printf("%02x ", key_material[j]);
-  }
-  printf("\n");
-
-  /* produce a less readable output used to perform automatic checks
-   * - compare client and server output
-   * - interop test with openssl which client produces this kind of output
-   */
-  printf("    Keying material: ");
-  for (j = 0; j < sizeof(key_material); j++) {
-    printf("%02X", key_material[j]);
-  }
-  printf("\n");
-#endif
-
   // derive inbounds keys
 
   memset(&dtls_srtp->remote_policy, 0, sizeof(dtls_srtp->remote_policy));
@@ -310,17 +288,17 @@ static int dtls_srtp_key_derivation(DtlsSrtp* dtls_srtp, const unsigned char* ma
   return 0;
 }
 
-#if CONFIG_MBEDTLS_2_X
-static int dtls_srtp_key_derivation_cb(void* context,
-                                       const unsigned char* ms,
-                                       const unsigned char* kb,
-                                       size_t maclen,
-                                       size_t keylen,
-                                       size_t ivlen,
-                                       const unsigned char client_random[32],
-                                       const unsigned char server_random[32],
-                                       mbedtls_tls_prf_types tls_prf_type) {
-#else
+// #if CONFIG_MBEDTLS_2_X
+// static int dtls_srtp_key_derivation_cb(void* context,
+//                                        const unsigned char* ms,
+//                                        const unsigned char* kb,
+//                                        size_t maclen,
+//                                        size_t keylen,
+//                                        size_t ivlen,
+//                                        const unsigned char client_random[32],
+//                                        const unsigned char server_random[32],
+//                                        mbedtls_tls_prf_types tls_prf_type) {
+// #else
 static void dtls_srtp_key_derivation_cb(void* context,
                                         mbedtls_ssl_key_export_type secret_type,
                                         const unsigned char* secret,
@@ -328,7 +306,7 @@ static void dtls_srtp_key_derivation_cb(void* context,
                                         const unsigned char client_random[32],
                                         const unsigned char server_random[32],
                                         mbedtls_tls_prf_types tls_prf_type) {
-#endif
+// #endif
   DtlsSrtp* dtls_srtp = (DtlsSrtp*)context;
 
   unsigned char master_secret[48];

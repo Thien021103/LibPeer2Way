@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.html": "html",
         "array": "c",
         "string_view": "c",
         "initializer_list": "c",
@@ -11,6 +12,8 @@
         "sctp.h": "c",
         "buffer.h": "c",
         "utils.h": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "debug.h": "c",
+        "sha256.h": "c"
     }
 }
