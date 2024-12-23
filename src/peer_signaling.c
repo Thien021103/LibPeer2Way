@@ -65,14 +65,6 @@ static char * get_string_from_json_object(JsonObject *object) {
 }
 
 typedef struct PeerSignaling {
-    // MQTTContext_t mqtt_ctx;
-    // MQTTFixedBuffer_t mqtt_fixed_buf;
-
-    // TransportInterface_t transport;
-    // NetworkContext_t net_ctx;
-
-    // uint8_t mqtt_buf[CONFIG_MQTT_BUFFER_SIZE];
-    // uint8_t http_buf[CONFIG_HTTP_BUFFER_SIZE];
 
     char subtopic[TOPIC_SIZE];
     char pubtopic[TOPIC_SIZE];
