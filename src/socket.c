@@ -107,7 +107,7 @@ int udp_socket_sendto(UdpSocket* udp_socket, Address* addr, const uint8_t* buf, 
 
   if (udp_socket->fd < 0) {
     LOGE("sendto before socket init");
-    return -1;
+    return -1;`
   }
 
   switch (addr->family) {

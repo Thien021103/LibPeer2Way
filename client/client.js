@@ -60,7 +60,7 @@ let datachannel = null;
     pc.ontrack = (evt) => {
         document.getElementById('media').style.display = 'block';
         const video = document.getElementById('video');
-        // always overrite the last stream - you may want to do something more clever in practice
+        // always overrite the last stream
         video.srcObject = evt.streams[0]; // The stream groups audio and video tracks
         video.play();
     };
