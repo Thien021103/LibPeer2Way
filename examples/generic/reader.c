@@ -12,7 +12,7 @@ static uint8_t* g_audio_buf = NULL;
 int reader_init() {
   FILE* video_fp = NULL;
   FILE* audio_fp = NULL;
-  char videofile[] = "1080.bin";
+  char videofile[] = "720.bin";
   char audiofile[] = "alaw08m.wav";
 
   video_fp = fopen(videofile, "rb");

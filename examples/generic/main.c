@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
       }
 
       // FPS 25
-      if (curr_time - video_time > 9) {
+      if (curr_time - video_time > 7) {
           video_time = curr_time;
           if (reader_get_video_frame(buf, &size) == 0) {
             peer_connection_send_video(g_pc, buf, size);
