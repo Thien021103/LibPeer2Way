@@ -11,8 +11,3 @@
 	path = third_party/mbedtls
 	url = https://github.com/Mbed-TLS/mbedtls.git
 
-
-# git submodule add https://github.com/cisco/libsrtp.git third_party/libsrtp
-# git submodule add https://github.com/DaveGamble/cJSON.git third_party/cJSON
-# git submodule add https://github.com/sctplab/usrsctp.git third_party/usrsctp
-# git submodule add https://github.com/Mbed-TLS/mbedtls.git third_party/mbedtls
