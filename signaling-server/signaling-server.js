@@ -74,7 +74,7 @@ wsServer.on('request', (req) => {
 const endpoint = process.env.PORT || '8000';
 const splitted = endpoint.split(':');
 const port = splitted.pop();
-const hostname = splitted.join(':') || '192.168.0.168';
+const hostname = splitted.join(':') || '127.0.0.1';
 
 httpServer.listen(port, hostname,
                   () => { console.log(`Server listening on ${hostname}:${port}`); });

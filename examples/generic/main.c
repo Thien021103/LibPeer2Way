@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
 
 
   ServiceConfiguration service_config = SERVICE_CONFIG_DEFAULT();
-  service_config.ws_url = "192.168.0.168";
+  service_config.ws_url = "127.0.0.1";
   service_config.ws_port = 8000;
 
   peer_init();

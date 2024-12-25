@@ -4,7 +4,7 @@ const iceConnectionLog = document.getElementById('ice-connection-state'),
     dataChannelLog = document.getElementById('data-channel');
 
 const clientId = randomId(10);
-const websocket = new WebSocket('ws://192.168.66.217:8000/' + clientId);
+const websocket = new WebSocket('ws://127.0.0.1:8000/' + clientId);
 
 websocket.onopen = () => {
     document.getElementById('start').disabled = false;
